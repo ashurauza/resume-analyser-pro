@@ -1,9 +1,15 @@
 // Client-side PDF parsing using PDF.js
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Set up the worker - use unpkg CDN which is more reliable
-const PDFJS_VERSION = pdfjsLib.version || '4.0.379';
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
+// Set up the worker - use the bundled worker from node_modules
+// This ensures it works both in dev and production
+if (typeof window !== 'undefined') {
+  // For Vite, we need to use the full path to the worker
+  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url
+  ).href;
+}
 
 /**
  * Extract text from a PDF file in the browser
