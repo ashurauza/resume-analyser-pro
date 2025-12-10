@@ -332,6 +332,8 @@ function getRoleSpecificTips(jobRole) {
 
 // ============= MCQ Functions =============
 
+import { getRandomQuestions, getAllTopics, getQuestionStats } from './mcqQuestions';
+
 const MCQ_STORAGE_KEY = 'resumeAnalyzer_mcqSessions';
 
 /**
