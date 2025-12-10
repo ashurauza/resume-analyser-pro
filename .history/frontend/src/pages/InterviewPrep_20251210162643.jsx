@@ -61,9 +61,11 @@ const InterviewPrep = () => {
 
   const fetchHistory = async () => {
     try {
-      const { sessions: historySessions, stats: historyStats } = getHistoryService();
-      setSessions(historySessions);
-      setStats(historyStats);
+      const response = await axios.get('http://localhost:3000/api/interview/history', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setSessions(response.data.sessions);
+      setStats(response.data.stats);
     } catch (error) {
       console.error('Failed to fetch history:', error);
     }
@@ -71,8 +73,11 @@ const InterviewPrep = () => {
 
   const fetchTips = async () => {
     try {
-      const tipsData = getTipsService(jobRole, interviewType);
-      setTips(tipsData);
+      const response = await axios.get('http://localhost:3000/api/interview/preparation/tips', {
+        params: { jobRole, interviewType },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setTips(response.data.tips);
     } catch (error) {
       console.error('Failed to fetch tips:', error);
     }
@@ -81,13 +86,17 @@ const InterviewPrep = () => {
   const createSession = async () => {
     setLoading(true);
     try {
-      const session = createInterviewSession({
+      const response = await axios.post('http://localhost:3000/api/interview/sessions', {
         jobRole,
         interviewType,
-        difficulty
+        difficulty,
+        duration: 30
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
-      startSession(session);
+      const sessionId = response.data.session.id;
+      await startSession(sessionId);
     } catch (error) {
       console.error('Failed to create session:', error);
       alert('Failed to create interview session');
@@ -96,11 +105,17 @@ const InterviewPrep = () => {
     }
   };
 
-  const startSession = (session) => {
+  const startSession = async (sessionId) => {
     try {
-      setCurrentSession(session);
+      const response = await axios.post(
+        `http://localhost:3000/api/interview/sessions/${sessionId}/start`,
+        {},
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
+      
+      setCurrentSession(response.data.session);
       setCurrentQuestionIndex(0);
-      setTimeRemaining(30 * 60); // 30 minutes
+      setTimeRemaining(response.data.session.duration * 60);
       setActiveTab('interview');
       setAnswer('');
       setFeedback(null);
@@ -118,19 +133,19 @@ const InterviewPrep = () => {
 
     setLoading(true);
     try {
-      const updatedSession = submitAnswerService(currentSession.id, currentQuestionIndex, answer);
-      const question = updatedSession.questions[currentQuestionIndex];
+      const question = currentSession.questions[currentQuestionIndex];
+      const response = await axios.post(
+        `http://localhost:3000/api/interview/sessions/${currentSession.id}/questions/${question.id}/answer`,
+        { answer, timeSpent: 120 },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
       
-      setFeedback({
-        score: question.score,
-        feedback: question.feedback
-      });
+      setFeedback(response.data.feedback);
       
       // Show feedback for 3 seconds then move to next question
       setTimeout(() => {
-        if (currentQuestionIndex < updatedSession.questions.length - 1) {
+        if (currentQuestionIndex < currentSession.questions.length - 1) {
           setCurrentQuestionIndex(prev => prev + 1);
-          setCurrentSession(updatedSession);
           setAnswer('');
           setFeedback(null);
         } else {
@@ -148,10 +163,14 @@ const InterviewPrep = () => {
   const completeSession = async () => {
     setLoading(true);
     try {
-      const completedSession = completeSessionService(currentSession.id);
+      const response = await axios.post(
+        `http://localhost:3000/api/interview/sessions/${currentSession.id}/complete`,
+        {},
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
       
       // Show completion report
-      alert(`Interview Complete! Your average score: ${completedSession.overallScore.toFixed(1)}/10`);
+      alert(`Interview Complete! Your score: ${response.data.report.overallScore}/100`);
       setActiveTab('history');
       fetchHistory();
       setCurrentSession(null);

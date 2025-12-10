@@ -118,19 +118,19 @@ const InterviewPrep = () => {
 
     setLoading(true);
     try {
-      const updatedSession = submitAnswerService(currentSession.id, currentQuestionIndex, answer);
-      const question = updatedSession.questions[currentQuestionIndex];
+      const question = currentSession.questions[currentQuestionIndex];
+      const response = await axios.post(
+        `http://localhost:3000/api/interview/sessions/${currentSession.id}/questions/${question.id}/answer`,
+        { answer, timeSpent: 120 },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
       
-      setFeedback({
-        score: question.score,
-        feedback: question.feedback
-      });
+      setFeedback(response.data.feedback);
       
       // Show feedback for 3 seconds then move to next question
       setTimeout(() => {
-        if (currentQuestionIndex < updatedSession.questions.length - 1) {
+        if (currentQuestionIndex < currentSession.questions.length - 1) {
           setCurrentQuestionIndex(prev => prev + 1);
-          setCurrentSession(updatedSession);
           setAnswer('');
           setFeedback(null);
         } else {
@@ -148,10 +148,14 @@ const InterviewPrep = () => {
   const completeSession = async () => {
     setLoading(true);
     try {
-      const completedSession = completeSessionService(currentSession.id);
+      const response = await axios.post(
+        `http://localhost:3000/api/interview/sessions/${currentSession.id}/complete`,
+        {},
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
       
       // Show completion report
-      alert(`Interview Complete! Your average score: ${completedSession.overallScore.toFixed(1)}/10`);
+      alert(`Interview Complete! Your score: ${response.data.report.overallScore}/100`);
       setActiveTab('history');
       fetchHistory();
       setCurrentSession(null);
