@@ -89,16 +89,6 @@ const InterviewPrep = () => {
     }
   };
 
-  const fetchMCQHistory = async () => {
-    try {
-      const { sessions: mcqSessionsData, stats: mcqStatsData } = getMCQHistory();
-      setMcqSessions(mcqSessionsData);
-      setMcqStats(mcqStatsData);
-    } catch (error) {
-      console.error('Failed to fetch MCQ history:', error);
-    }
-  };
-
   const fetchTips = async () => {
     try {
       const tipsData = getTipsService(jobRole, interviewType);
