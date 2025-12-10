@@ -61,7 +61,7 @@ function App() {
       console.log('Analysis complete:', analysisResult)
       
       // Step 3: Save to localStorage
-      saveAnalysis({
+      const savedAnalysis = saveAnalysis({
         ...analysisResult,
         fileName: file.name,
         fileSize: file.size,
@@ -70,7 +70,7 @@ function App() {
       })
       
       setAnalysis(analysisResult)
-      alert('✅ Resume analyzed successfully!\n\n🎉 All processing done in your browser - no backend needed!')
+      alert('Resume analyzed successfully! ✅ All processing done in your browser.')
     } catch (error) {
       console.error('Analysis failed:', error)
       alert(`Analysis failed: ${error.message}\n\nPlease ensure you uploaded a valid PDF file.`)
@@ -105,7 +105,7 @@ function App() {
             <Brain className="logo-icon" />
             <h1>Resume Analyzer Pro</h1>
           </div>
-          <p className="tagline">AI-Powered Resume Analysis & ATS Optimization • Works 100% Offline</p>
+          <p className="tagline">AI-Powered Resume Analysis & ATS Optimization</p>
         </div>
       </motion.header>
 
@@ -239,7 +239,7 @@ function App() {
 
             {/* Detailed Scores */}
             <div className="scores-grid">
-              {analysis.categoryScores && Object.entries(analysis.categoryScores).map(([key, value], index) => (
+              {analysis.scores && Object.entries(analysis.scores).map(([key, value], index) => (
                 <motion.div
                   key={key}
                   className="score-card"
@@ -285,8 +285,7 @@ function App() {
                     {getPriorityIcon(rec.priority)}
                     <div className="rec-content">
                       <h4>{rec.category}</h4>
-                      <p>{rec.suggestion}</p>
-                      {rec.impact && <small className="impact-text">{rec.impact}</small>}
+                      <p>{rec.message}</p>
                     </div>
                   </motion.div>
                 ))}

@@ -105,7 +105,7 @@ function App() {
             <Brain className="logo-icon" />
             <h1>Resume Analyzer Pro</h1>
           </div>
-          <p className="tagline">AI-Powered Resume Analysis & ATS Optimization • Works 100% Offline</p>
+          <p className="tagline">AI-Powered Resume Analysis & ATS Optimization</p>
         </div>
       </motion.header>
 

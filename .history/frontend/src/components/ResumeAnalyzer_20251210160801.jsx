@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, FileText, Brain, Target, TrendingUp, AlertCircle, CheckCircle, XCircle } from 'lucide-react'
+import { Upl      >
+        <div className="header-content">
+          <div className="logo">
+            <Brain className="logo-icon" />
+            <h1>Resume Analyzer Pro</h1>
+          </div>
+          <p className="tagline">AI-Powered Resume Analysis & ATS Optimization • 100% Client-Side • Works Offline</p>
+        </div>
+      </motion.header>Text, Brain, Target, TrendingUp, AlertCircle, CheckCircle, XCircle } from 'lucide-react'
 import { RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer } from 'recharts'
 import { parsePDFFile } from '../services/pdfParser'
 import { analyzeResume } from '../services/resumeAnalyzer'
