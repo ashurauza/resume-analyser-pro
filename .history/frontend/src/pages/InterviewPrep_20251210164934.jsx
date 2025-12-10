@@ -27,7 +27,7 @@ import {
 
 const InterviewPrep = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('start'); // start, mcq, interview, history, tips
+  const [activeTab, setActiveTab] = useState('start'); // start, interview, history, tips
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -44,23 +44,9 @@ const InterviewPrep = () => {
   const [interviewType, setInterviewType] = useState('mixed');
   const [difficulty, setDifficulty] = useState('intermediate');
 
-  // MCQ state
-  const [mcqTopic, setMcqTopic] = useState('All');
-  const [mcqDifficulty, setMcqDifficulty] = useState('all');
-  const [mcqQuestionCount, setMcqQuestionCount] = useState(10);
-  const [mcqSessions, setMcqSessions] = useState([]);
-  const [mcqStats, setMcqStats] = useState(null);
-  const [currentMcqSession, setCurrentMcqSession] = useState(null);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showMcqFeedback, setShowMcqFeedback] = useState(false);
-  const [mcqTopics, setMcqTopics] = useState([]);
-
   useEffect(() => {
     fetchHistory();
     fetchTips();
-    fetchMCQHistory();
-    const { topics } = getMCQTopicsAndStats();
-    setMcqTopics(topics);
   }, []);
 
   useEffect(() => {
